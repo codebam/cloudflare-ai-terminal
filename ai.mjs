@@ -1,7 +1,8 @@
+#!/home/codebam/.nvm/versions/node/v20.8.0/bin/node
 import readline from "readline";
 
-const API_TOKEN = "";
-const ACCOUNT_ID = "";
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -19,15 +20,12 @@ const llama2 = (prompt) =>
 	);
 
 if (process.argv[2]) {
-	console.log(
-		(await (await llama2(process.argv.slice(2).join(" "))).json()).result
-			.response
-	);
+	const line = process.argv.slice(2).join(" ");
+	console.log((await (await llama2(line)).json()).result);
 } else {
 	rl.setPrompt("_? ");
 	rl.prompt();
 	rl.on("line", async (line) => {
-		const response = (await (await llama2(line)).json()).result.response;
-		console.log(response);
+		console.log((await (await llama2(line)).json()).result);
 	});
 }
